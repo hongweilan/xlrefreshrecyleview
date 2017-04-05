@@ -10,7 +10,7 @@ import android.view.ViewGroup;
  * Created by LanHongwei on 2017/4/1.
  */
 
-public abstract class BaseAdapter extends RecyclerView.Adapter implements View.OnClickListener{
+public abstract class BaseAdapter extends RecyclerView.Adapter implements View.OnClickListener,View.OnLongClickListener{
 
     public Context context;
 
@@ -22,7 +22,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements View.O
     private View emptyView;
     private XLRecyclerView xlRecyclerView;
 
-    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
+    private OnItemClickListener mOnItemClickListener = null;
+    private OnLongItemClickListener mOnLongItemClickListener = null;
 
     public BaseAdapter(Context context){
         this.context=context;
@@ -75,6 +76,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements View.O
         }else{
             RecyclerView.ViewHolder viewHolder=createContentViewHolder(parent,viewType);
             viewHolder.itemView.setOnClickListener(this);
+            viewHolder.itemView.setOnLongClickListener(this);
             return viewHolder;
         }
     }
@@ -106,8 +108,12 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements View.O
         emptyObserver.onChanged();
     }
 
-    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener l){
+    public void setOnItemClickListener(OnItemClickListener l){
         mOnItemClickListener = l;
+    }
+
+    public void setOnLongItemClickListener(OnLongItemClickListener l){
+        mOnLongItemClickListener = l;
     }
 
     @Override
@@ -115,6 +121,15 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements View.O
         if (mOnItemClickListener != null) {
             mOnItemClickListener.onItemClick(v,v.getTag());
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if(mOnLongItemClickListener!=null){
+            mOnLongItemClickListener.onLongItemClick(v,v.getTag());
+            return true;
+        }
+        return false;
     }
 
     private final class HeaderViewHolder extends RecyclerView.ViewHolder{
@@ -190,8 +205,12 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements View.O
         }
     };
 
-    public  interface OnRecyclerViewItemClickListener {
+    public  interface OnItemClickListener {
         void onItemClick(View view , Object o);
+    }
+
+    public  interface OnLongItemClickListener {
+        void onLongItemClick(View view , Object o);
     }
 
     private final class ViewType{
