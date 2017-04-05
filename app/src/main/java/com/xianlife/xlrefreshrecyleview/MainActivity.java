@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,18 @@ public class MainActivity extends AppCompatActivity {
         xlRecyclerView.setMode(XLRecyclerView.Mode.Both);
         xlRecyclerView.setPreLoadEnble(true);
         myAdapter=new MyAdapter(this,list);
+        myAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, Object o) {
+                Toast.makeText(MainActivity.this,"onItemClick",Toast.LENGTH_SHORT).show();
+            }
+        });
+        myAdapter.setOnLongItemClickListener(new BaseAdapter.OnLongItemClickListener() {
+            @Override
+            public void onLongItemClick(View view, Object o) {
+                Toast.makeText(MainActivity.this,"onLongItemClick",Toast.LENGTH_SHORT).show();
+            }
+        });
         xlRecyclerView.setAdapter(myAdapter);
 
         xlRecyclerView.setOnRefreshListener(new XLRecyclerView.OnRefreshListener() {
