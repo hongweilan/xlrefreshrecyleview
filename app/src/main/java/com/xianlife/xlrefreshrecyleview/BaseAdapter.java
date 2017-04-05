@@ -10,7 +10,7 @@ import android.view.ViewGroup;
  * Created by LanHongwei on 2017/4/1.
  */
 
-public abstract class BaseAdapter extends RecyclerView.Adapter{
+public abstract class BaseAdapter extends RecyclerView.Adapter implements View.OnClickListener{
 
     public Context context;
 
@@ -21,6 +21,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter{
 
     private View emptyView;
     private XLRecyclerView xlRecyclerView;
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
 
     public BaseAdapter(Context context){
         this.context=context;
@@ -71,7 +73,9 @@ public abstract class BaseAdapter extends RecyclerView.Adapter{
             footerView.setPadding(0, 0, 0, -1 * footContentHeight+1);
             return new FooterViewHolder(footerView);
         }else{
-            return createContentViewHolder(parent,viewType);
+            RecyclerView.ViewHolder viewHolder=createContentViewHolder(parent,viewType);
+            viewHolder.itemView.setOnClickListener(this);
+            return viewHolder;
         }
     }
 
@@ -86,10 +90,13 @@ public abstract class BaseAdapter extends RecyclerView.Adapter{
             //nothing
         }else{
             bindContentViewHolder(holder,position-1);
+            holder.itemView.setTag(setTagForItem(position-1));
         }
     }
 
     public abstract void bindContentViewHolder(RecyclerView.ViewHolder holder, int position);
+
+    public abstract Object setTagForItem(int position);
 
     /**
      * 数据源变化后刷新界面（如果数据源为空，显示EmptyView）
@@ -97,6 +104,17 @@ public abstract class BaseAdapter extends RecyclerView.Adapter{
     public final void notifyDataSetChangedForEmpty() {
         notifyDataSetChanged();
         emptyObserver.onChanged();
+    }
+
+    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener l){
+        mOnItemClickListener = l;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(v,v.getTag());
+        }
     }
 
     private final class HeaderViewHolder extends RecyclerView.ViewHolder{
@@ -171,6 +189,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter{
             }
         }
     };
+
+    public  interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view , Object o);
+    }
 
     private final class ViewType{
         public static final int viewType1=-1;
