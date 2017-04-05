@@ -41,6 +41,11 @@ public class MyAdapter extends BaseAdapter{
         ((MyViewHolder)holder).textView.setText(list.get(position)+"   "+position);
     }
 
+    @Override
+    public Object setTagForItem(int position) {
+        return list.get(position);
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView textView;
