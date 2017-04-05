@@ -98,6 +98,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter implements View.O
 
     public abstract void bindContentViewHolder(RecyclerView.ViewHolder holder, int position);
 
+    /**
+     * 为Item设置Tag，同时也是点击或长按的数据源
+     * @param position
+     * @return
+     */
     public abstract Object setTagForItem(int position);
 
     /**
